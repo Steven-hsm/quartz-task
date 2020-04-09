@@ -1,7 +1,7 @@
 package com.hsm.quartztask.common;
 
 import lombok.Data;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,5 +12,6 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class TaskPropertyRead {
-//    @Value("")
+    @Value("${spring.quartz.jobspring.package}")
+    private String scanPackage;
 }

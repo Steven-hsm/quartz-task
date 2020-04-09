@@ -1,7 +1,10 @@
 package com.hsm.quartztask.common;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -11,5 +14,7 @@ import java.util.Set;
  */
 @Component
 public class JobClassSet {
-    private Set<String> jobSet;
+    @Getter
+    @Setter
+    private Set<String> jobClasses = new HashSet<>(32);
 }

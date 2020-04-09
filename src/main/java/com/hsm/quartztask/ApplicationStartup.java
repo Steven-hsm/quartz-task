@@ -21,6 +21,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
         log.info("=============springboot启动成功===============");
+        //扫码job包
         jobScanService.scanJobClass();
 
     }

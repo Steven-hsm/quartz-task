@@ -1,4 +1,4 @@
-package com.hsm.quartztask.controller;
+package com.hsm.quartztask.controller.job;
 
 import com.hsm.quartztask.common.ResponseBO;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
