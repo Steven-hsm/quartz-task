@@ -8,7 +8,6 @@ import com.hsm.quartztask.util.ClassUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class JobScanService implements IJobScanService {
     @Override
     public void scanJobClass() {
         String scanPackage = taskPropertyRead.getScanPackage();
-        if(StringUtils.isEmpty(scanPackage)){
+        if("com.hsm.quartztask.job".equals(scanPackage)){
             log.error("没有配置spring.quartz.jobspring.package,你的任务可能无法启动" );
         }
         //获取jar下所有的java文件
