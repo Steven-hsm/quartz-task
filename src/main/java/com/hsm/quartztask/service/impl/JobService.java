@@ -1,5 +1,8 @@
 package com.hsm.quartztask.service.impl;
 
+import com.hsm.quartztask.common.PageBO;
+import com.hsm.quartztask.common.PageUtils;
+import com.hsm.quartztask.common.QueryVO;
 import com.hsm.quartztask.common.ResponseBO;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
 import com.hsm.quartztask.entity.vo.JobCronVO;
@@ -94,7 +97,7 @@ public class JobService implements IJobService {
     }
 
     @Override
-    public ResponseBO<List<JobInfoBO>> listJob(JobFormVO jobFormVO)  throws Exception {
+    public ResponseBO<PageBO<JobInfoBO>> listJob(QueryVO queryVO)  throws Exception {
         List<JobInfoBO> list = new ArrayList<>();
         try {
             List<String> triggerGroupNames = scheduler.getTriggerGroupNames();
@@ -131,6 +134,6 @@ public class JobService implements IJobService {
             log.error("获取定时任务异常", e);
             throw  e;
         }
-        return ResponseBO.success(list);
+        return ResponseBO.success(PageUtils.transferToPage(list, queryVO));
     }
 }

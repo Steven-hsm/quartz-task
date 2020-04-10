@@ -1,5 +1,7 @@
 package com.hsm.quartztask.service;
 
+import com.hsm.quartztask.common.PageBO;
+import com.hsm.quartztask.common.QueryVO;
 import com.hsm.quartztask.common.ResponseBO;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
 import com.hsm.quartztask.entity.vo.JobCronVO;
@@ -51,8 +53,8 @@ public interface IJobService {
 
     /**
      * 获取任务列表
-     * @param jobFormVO
+     * @param queryVO
      * @return
      */
-    ResponseBO<List<JobInfoBO>> listJob(JobFormVO jobFormVO)  throws Exception ;
+    ResponseBO<PageBO<JobInfoBO>> listJob(QueryVO queryVO)  throws Exception ;
 }

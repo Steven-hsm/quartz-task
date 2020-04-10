@@ -1,5 +1,7 @@
 package com.hsm.quartztask.controller.job;
 
+import com.hsm.quartztask.common.PageBO;
+import com.hsm.quartztask.common.QueryVO;
 import com.hsm.quartztask.common.ResponseBO;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
 import com.hsm.quartztask.entity.vo.JobCronVO;
@@ -36,6 +38,7 @@ public class JobController {
         try{
             return jobService.addJob(JobFormVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("添加失败");
         }
     }
@@ -46,6 +49,7 @@ public class JobController {
         try{
             return jobService.deleteJob(jobKeyVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("删除失败");
         }
     }
@@ -56,6 +60,7 @@ public class JobController {
         try{
             return jobService.pauseJob(jobKeyVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("删除失败");
         }
     }
@@ -66,6 +71,7 @@ public class JobController {
         try{
             return jobService.resumeJob(jobKeyVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("重启失败");
         }
     }
@@ -79,16 +85,18 @@ public class JobController {
         try{
             return jobService.cronJob(jobCronVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("重启失败");
         }
     }
 
     @ApiOperation(value = "获取任务列表",httpMethod = "GET")
     @GetMapping("/list")
-    public ResponseBO<List<JobInfoBO>> listJob(JobFormVO jobFormVO){
+    public ResponseBO<PageBO<JobInfoBO>> listJob(QueryVO queryVO){
         try{
-            return jobService.listJob(jobFormVO);
+            return jobService.listJob(queryVO);
         }catch (Exception e){
+            log.error("服务处理异常,{}", e);
             return ResponseBO.failure("列表获取失败");
         }
     }

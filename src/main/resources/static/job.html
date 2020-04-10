@@ -150,8 +150,8 @@
                 this.loading = true;
                 this.$http.get('job/list?' + 'currentPage=' + currentPage + '&pageSize=' + pageSize).then(function (res) {
                     console.log(res);
-                    this.tableData = res.body.info;
-                    this.totalCount = 10;
+                    this.tableData = res.body.info.data;
+                    this.totalCount = res.body.info.totalCount;
                     this.loading = false;
                 }, function () {
                     console.log('failed');
