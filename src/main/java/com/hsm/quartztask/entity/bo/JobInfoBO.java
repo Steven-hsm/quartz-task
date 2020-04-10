@@ -25,7 +25,7 @@ public class JobInfoBO {
     @ApiModelProperty("任务描述")
     private String jobDescription;
     @ApiModelProperty("任务描述")
-    private String jobStatus;
+    private String triggerState;
     @ApiModelProperty("cron表达式")
     private String cronExpression;
     @ApiModelProperty("创建时间")

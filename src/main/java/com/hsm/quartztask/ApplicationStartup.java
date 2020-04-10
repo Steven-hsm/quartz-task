@@ -23,6 +23,5 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         log.info("=============springboot启动成功===============");
         //扫码job包
         jobScanService.scanJobClass();
-
     }
 }

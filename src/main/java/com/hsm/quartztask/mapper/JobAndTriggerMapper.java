@@ -54,4 +54,13 @@ public interface JobAndTriggerMapper extends BaseMapper<JobAndTriggerPO> {
     @Update("UPDATE job_trigger SET cron_expression = #{cron_expression} " +
             "WHERE job_name=#{jobName} AND job_group = #{jobGroup}")
     Integer updateCron(String jobName, String jobGroup, String cronExpression);
+
+    /**
+     * 获取没有删除的
+     *
+     * @param triggerState
+     * @return
+     */
+    @Select("SELECT * FROM job_trigger WHERE trigger_state != #{triggerState}")
+    List<JobAndTriggerPO> selectScheduledJob(@Param("triggerState")String triggerState);
 }

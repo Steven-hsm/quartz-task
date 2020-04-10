@@ -1,7 +1,9 @@
 package com.hsm.quartztask.common;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -9,12 +11,24 @@ import java.util.Set;
 
 /**
  * @author huangsenming
- * @Description:
+ * @Description: 任务类集合
  * @date 2020/4/9 18:27
  */
 @Component
+@Data
 public class JobClassSet {
-    @Getter
-    @Setter
+    /**
+     * 扫描的所有任务类
+     */
     private Set<String> jobClasses = new HashSet<>(32);
+    /**
+     * 正在被调度的任务类,包含正常,以及停止的任务
+     */
+    private Set<String> scheduledClass = new HashSet<>(32);
+    /**
+     * 可以添加的任务类
+     */
+    private Set<String> toAddClass = new HashSet<>(32);
+
+
 }

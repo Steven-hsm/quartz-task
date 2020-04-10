@@ -57,4 +57,8 @@ public class JobAndTriggerPO {
      * 添加时间
      */
     private Long ctime;
+    /**
+     * 添加时间
+     */
+    private String description;
 }
