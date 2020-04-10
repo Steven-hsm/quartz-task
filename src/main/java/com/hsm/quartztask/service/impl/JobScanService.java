@@ -55,6 +55,7 @@ public class JobScanService implements IJobScanService {
             //表中存在就直接调度任务启动
             if (jobClassSet.getJobClasses().contains(jobAndTrigger.getJobClass())) {
 // 构建Job信息
+                jobClassSet.getScheduledClass().add(jobAndTrigger.getJobClass());
                 try {
                     JobDetail jobDetail = JobBuilder.newJob(JobUtil.getClass(jobAndTrigger.getJobClass()).getClass()).withIdentity(jobAndTrigger.getJobName(), jobAndTrigger.getJobGroup()).withDescription(jobAndTrigger.getDescription()).build();
 
@@ -73,6 +74,8 @@ public class JobScanService implements IJobScanService {
                     log.error("触发{}任务异常", JSON.toJSON(jobAndTrigger), e);
                 }
             }
+            jobClassSet.getToAddClass().addAll(jobClassSet.getJobClasses());
+            jobClassSet.getToAddClass().removeAll(jobClassSet.getScheduledClass());
         });
 
 

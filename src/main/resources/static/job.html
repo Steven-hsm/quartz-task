@@ -75,8 +75,18 @@
             <el-form-item label="任务分组" label-width="100px" style="width:90%">
                 <el-input v-model="form.jobGroup" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="任务bean" label-width="100px" style="width:90%">
+            <!--<el-form-item label="任务bean" label-width="100px" style="width:90%">
                 <el-input v-model="form.jobClass" auto-complete="off"></el-input>
+            </el-form-item>-->
+            <el-form-item label="任务bean" label-width="100px" style="width:90%">
+                <el-select v-model="form.jobClass" placeholder="请选择">
+                    <el-option
+                            v-for="item in jobClass"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="表达式" label-width="100px" style="width:90%">
                 <el-input v-model="form.cronExpression" auto-complete="off"></el-input>
@@ -112,6 +122,7 @@
     var vue = new Vue({
         el: "#job",
         data: {
+            jobClass:[],
             //表格当前页数据
             tableData: [],
             //请求的URL
@@ -206,6 +217,12 @@
             // 弹出对话框
             handleadd: function () {
                 this.dialogFormVisible = true;
+                this.$http.get('job/scan/list',{}, {emulateJSON: true}
+                ).then(function (res) {
+                    this.jobClass= res.body.info.toAddClass
+                }, function () {
+                    console.log('failed');
+                });
             },
             // 添加
             add: function () {
@@ -244,6 +261,14 @@
                     console.log('failed');
                 });
 
+            },
+            scanJobList:function(){
+                this.$http.put('job/scan/list',{}, {emulateJSON: true}
+                ).then(function (res) {
+                    this.jobClass= res.body.info.toAddClass
+                }, function () {
+                    console.log('failed');
+                });
             },
             // 每页显示数据量变更
             handleSizeChange: function (val) {
