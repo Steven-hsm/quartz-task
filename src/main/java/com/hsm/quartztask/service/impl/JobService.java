@@ -1,18 +1,24 @@
 package com.hsm.quartztask.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsm.quartztask.common.PageBO;
 import com.hsm.quartztask.common.PageUtils;
 import com.hsm.quartztask.common.QueryVO;
 import com.hsm.quartztask.common.ResponseBO;
+import com.hsm.quartztask.common.enums.TriggerStateEnum;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
+import com.hsm.quartztask.entity.po.JobAndTriggerPO;
 import com.hsm.quartztask.entity.vo.JobCronVO;
 import com.hsm.quartztask.entity.vo.JobFormVO;
 import com.hsm.quartztask.entity.vo.JobKeyVO;
+import com.hsm.quartztask.mapper.JobAndTriggerMapper;
 import com.hsm.quartztask.service.IJobService;
 import com.hsm.quartztask.util.JobUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,23 +37,36 @@ public class JobService implements IJobService {
 
     @Autowired
     private Scheduler scheduler;
+    @Autowired
+    private JobAndTriggerMapper jobAndTriggerMapper;
 
     @Override
     public ResponseBO addJob(JobFormVO jobFormVO) throws Exception {
         // 启动调度器
         scheduler.start();
+        JobAndTriggerPO jobAndTrigger = jobAndTriggerMapper.getByKey(jobFormVO.getJobName(), jobFormVO.getJobGroup());
+        if(jobAndTrigger == null){
+            jobAndTrigger = new JobAndTriggerPO();
+            BeanUtils.copyProperties(jobFormVO, jobAndTrigger);
+            jobAndTrigger.setTriggerName(jobFormVO.getJobName());
+            jobAndTrigger.setTriggerGroup(jobFormVO.getJobGroup());
+            jobAndTrigger.setTriggerState(TriggerStateEnum.NORMAL.getState());
+            jobAndTrigger.setCtime(System.currentTimeMillis());
+            jobAndTriggerMapper.insert(jobAndTrigger);
+        }else{
+            jobAndTriggerMapper.updateState(jobFormVO.getJobName(), jobFormVO.getJobGroup(), TriggerStateEnum.NORMAL.getState());
+        }
 
         // 构建Job信息
         JobDetail jobDetail = JobBuilder.newJob(JobUtil.getClass(jobFormVO.getJobClass()).getClass()).withIdentity(jobFormVO.getJobName(), jobFormVO.getJobGroup()).withDescription(jobFormVO.getDescription()).build();
-
 
         // Cron表达式调度构建器(即任务执行的时间)
         CronScheduleBuilder cron = CronScheduleBuilder.cronSchedule(jobFormVO.getCronExpression());
 
         //根据Cron表达式构建一个Trigger
         CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobFormVO.getJobName(), jobFormVO.getJobGroup()).withSchedule(cron).build();
-
         try {
+
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             log.error("【定时任务】创建失败！", e);
@@ -58,6 +77,7 @@ public class JobService implements IJobService {
 
     @Override
     public ResponseBO deleteJob(JobKeyVO jobKeyVO) throws  Exception{
+        jobAndTriggerMapper.updateState(jobKeyVO.getJobName(),jobKeyVO.getJobGroup(),TriggerStateEnum.DELETE.getState());
         scheduler.pauseTrigger(TriggerKey.triggerKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         scheduler.unscheduleJob(TriggerKey.triggerKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         scheduler.deleteJob(JobKey.jobKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
@@ -66,12 +86,14 @@ public class JobService implements IJobService {
 
     @Override
     public ResponseBO pauseJob(JobKeyVO jobKeyVO) throws Exception {
+        jobAndTriggerMapper.updateState(jobKeyVO.getJobName(),jobKeyVO.getJobGroup(),TriggerStateEnum.PAUSED.getState());
         scheduler.pauseJob(JobKey.jobKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         return ResponseBO.success("暂停成功");
     }
 
     @Override
     public ResponseBO resumeJob(JobKeyVO jobKeyVO) throws Exception {
+        jobAndTriggerMapper.updateState(jobKeyVO.getJobName(),jobKeyVO.getJobGroup(),TriggerStateEnum.NORMAL.getState());
         scheduler.resumeJob(JobKey.jobKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         return ResponseBO.success("重启成功");
     }
@@ -87,6 +109,7 @@ public class JobService implements IJobService {
 
             // 根据Cron表达式构建一个Trigger
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+            jobAndTriggerMapper.updateCron(jobCronVO.getJobName(),jobCronVO.getJobGroup(),jobCronVO.getCronExpression());
             // 按新的trigger重新设置job执行
             scheduler.rescheduleJob(triggerKey, trigger);
         } catch (SchedulerException e) {
@@ -116,6 +139,7 @@ public class JobService implements IJobService {
 
                     info.setJobName(jobKey.getName());
                     info.setJobGroup(jobKey.getGroup());
+                    info.setJobClass(jobDetail.getJobClass().getName());
                     info.setJobDescription(jobDetail.getDescription());
                     info.setJobStatus(triggerState.name());
                     if (trigger instanceof CronTrigger) {
@@ -135,5 +159,11 @@ public class JobService implements IJobService {
             throw  e;
         }
         return ResponseBO.success(PageUtils.transferToPage(list, queryVO));
+    }
+
+    @Override
+    public ResponseBO<PageBO<JobAndTriggerPO>> listJob2(QueryVO queryVO) {
+        IPage<JobAndTriggerPO> page = jobAndTriggerMapper.list(new Page(queryVO.getCurrentPage(),queryVO.getPageSize()));
+        return ResponseBO.success(PageUtils.transferToPage(page.getRecords(), queryVO));
     }
 }

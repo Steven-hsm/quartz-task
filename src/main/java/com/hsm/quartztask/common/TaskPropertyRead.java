@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class TaskPropertyRead {
-    @Value("${spring.quartz.jobspring.package}")
+    @Value("${spring.quartz.job.package}")
     private String scanPackage;
 }

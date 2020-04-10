@@ -16,4 +16,12 @@ public class QueryVO {
     private int currentPage;
     @ApiModelProperty("分页大小")
     private int pageSize;
+
+    public QueryVO() {
+    }
+
+    public QueryVO(int currentPage, int pageSize) {
+        this.currentPage = currentPage;
+        this.pageSize = pageSize;
+    }
 }

@@ -34,4 +34,6 @@ public class JobInfoBO {
     private Date previousFireTime;
     @ApiModelProperty("下次执行时间")
     private Date nextFireTime;
+    @ApiModelProperty("任务类")
+    private String jobClass;
 }

@@ -4,6 +4,7 @@ import com.hsm.quartztask.common.PageBO;
 import com.hsm.quartztask.common.QueryVO;
 import com.hsm.quartztask.common.ResponseBO;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
+import com.hsm.quartztask.entity.po.JobAndTriggerPO;
 import com.hsm.quartztask.entity.vo.JobCronVO;
 import com.hsm.quartztask.entity.vo.JobFormVO;
 import com.hsm.quartztask.entity.vo.JobKeyVO;
@@ -95,6 +96,17 @@ public class JobController {
     public ResponseBO<PageBO<JobInfoBO>> listJob(QueryVO queryVO){
         try{
             return jobService.listJob(queryVO);
+        }catch (Exception e){
+            log.error("服务处理异常,{}", e);
+            return ResponseBO.failure("列表获取失败");
+        }
+    }
+
+    @ApiOperation(value = "获取任务列表",httpMethod = "GET")
+    @GetMapping("/list2")
+    public ResponseBO<PageBO<JobAndTriggerPO>> listJob2(QueryVO queryVO){
+        try{
+            return jobService.listJob2(queryVO);
         }catch (Exception e){
             log.error("服务处理异常,{}", e);
             return ResponseBO.failure("列表获取失败");
