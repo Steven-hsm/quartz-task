@@ -5,21 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigInteger;
-
-/**
- * <p>
- * 实体类
- * </p>
- *
- * @package: com.xkcoding.task.quartz.entity.domain
- * @description: 实体类
- * @author: yangkai.shen
- * @date: Created in 2018-11-26 15:05
- * @copyright: Copyright (c) 2018
- * @version: V1.0
- * @modified: yangkai.shen
- */
 @Data
 @TableName("job_trigger")
 public class JobAndTriggerPO {

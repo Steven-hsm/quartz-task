@@ -2,10 +2,7 @@ package com.hsm.quartztask.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hsm.quartztask.common.PageBO;
-import com.hsm.quartztask.common.PageUtils;
-import com.hsm.quartztask.common.QueryVO;
-import com.hsm.quartztask.common.ResponseBO;
+import com.hsm.quartztask.common.*;
 import com.hsm.quartztask.common.enums.TriggerStateEnum;
 import com.hsm.quartztask.entity.bo.JobInfoBO;
 import com.hsm.quartztask.entity.po.JobAndTriggerPO;
@@ -39,9 +36,12 @@ public class JobService implements IJobService {
     private Scheduler scheduler;
     @Autowired
     private JobAndTriggerMapper jobAndTriggerMapper;
+    @Autowired
+    private JobClassSet jobClassSet;
 
     @Override
     public ResponseBO addJob(JobFormVO jobFormVO) throws Exception {
+
         // 启动调度器
         scheduler.start();
         JobAndTriggerPO jobAndTrigger = jobAndTriggerMapper.getByKey(jobFormVO.getJobName(), jobFormVO.getJobGroup());
@@ -68,6 +68,7 @@ public class JobService implements IJobService {
         try {
 
             scheduler.scheduleJob(jobDetail, trigger);
+            jobClassSet.getToAddClass().remove(jobFormVO.getJobClass());
         } catch (SchedulerException e) {
             log.error("【定时任务】创建失败！", e);
             throw new Exception("【定时任务】创建失败！");
@@ -77,10 +78,15 @@ public class JobService implements IJobService {
 
     @Override
     public ResponseBO deleteJob(JobKeyVO jobKeyVO) throws  Exception{
+        JobAndTriggerPO jobAndTrigger = jobAndTriggerMapper.getByKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup());
+        if(jobAndTrigger == null){
+            return ResponseBO.failure("数据库存储异常");
+        }
         jobAndTriggerMapper.updateState(jobKeyVO.getJobName(),jobKeyVO.getJobGroup(),TriggerStateEnum.DELETE.getState());
         scheduler.pauseTrigger(TriggerKey.triggerKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         scheduler.unscheduleJob(TriggerKey.triggerKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
         scheduler.deleteJob(JobKey.jobKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup()));
+        jobClassSet.getToAddClass().add(jobAndTrigger.getJobClass());
         return ResponseBO.success("删除成功");
     }
 

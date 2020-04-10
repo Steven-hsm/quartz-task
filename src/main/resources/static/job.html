@@ -7,6 +7,7 @@
     <script src="https://cdn.bootcss.com/vue/2.5.17/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.9/index.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 
     <style>
         #top {
@@ -32,7 +33,7 @@
             <el-table-column prop="jobClass" label="任务类名" align="center"></el-table-column>
             <el-table-column prop="triggerName" label="触发器名称" align="center"></el-table-column>
             <el-table-column prop="triggerGroup" label="触发器所在组" sortable align="center"></el-table-column>
-            <el-table-column prop="cronExpression" label="表达式" align="center"></el-table-column>
+            <el-table-column prop="cronExpression" label="cron表达式" align="center"></el-table-column>
             <el-table-column prop="previousFireTime" label="上次执行时间" align="center"></el-table-column>
             <el-table-column prop="nextFireTime" label="下次执行时间" align="center"></el-table-column>
             <el-table-column prop="triggerState" label="状态" align="center" :formatter="formatState"></el-table-column>
@@ -123,6 +124,7 @@
         el: "#job",
         data: {
             jobClass:[],
+            msg:"123",
             //表格当前页数据
             tableData: [],
             //请求的URL
@@ -192,7 +194,7 @@
             handlePause: function (index, row) {
                 this.$http.put('job/pause', {
                     "jobName": row.jobName,
-                    "jobName": row.jobGroup
+                    "jobGroup": row.jobGroup
                 }, {emulateJSON: true}).then(function (res) {
                     this.loadData(this.currentPage, this.pagesize);
                 }, function () {
@@ -203,7 +205,7 @@
             handleResume: function (index, row) {
                 this.$http.put('job/resume', {
                     "jobName": row.jobName,
-                    "jobName": row.jobGroup
+                    "jobGroup": row.jobGroup
                 }, {emulateJSON: true}).then(function (res) {
                     this.loadData(this.currentPage, this.pagesize);
                 }, function () {

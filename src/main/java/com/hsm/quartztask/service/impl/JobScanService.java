@@ -48,6 +48,7 @@ public class JobScanService implements IJobScanService {
         //将所有扫描的类放入到set集合中
         classes.forEach(clazz -> {
             jobClassSet.getJobClasses().add(clazz.getName());
+            jobClassSet.getToAddClass().addAll(jobClassSet.getJobClasses());
         });
         //获取所有不是删除状态的任务,即需要执行
         List<JobAndTriggerPO> tableList = jobAndTriggerMapper.selectScheduledJob(TriggerStateEnum.DELETE.getState());
@@ -74,10 +75,7 @@ public class JobScanService implements IJobScanService {
                     log.error("触发{}任务异常", JSON.toJSON(jobAndTrigger), e);
                 }
             }
-            jobClassSet.getToAddClass().addAll(jobClassSet.getJobClasses());
-            jobClassSet.getToAddClass().removeAll(jobClassSet.getScheduledClass());
         });
-
-
+        jobClassSet.getToAddClass().removeAll(jobClassSet.getScheduledClass());
     }
 }

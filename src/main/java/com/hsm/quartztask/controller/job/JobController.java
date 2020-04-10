@@ -33,7 +33,10 @@ public class JobController {
 
     @ApiOperation(value = "添加任务",httpMethod = "POST")
     @PostMapping
-    public ResponseBO addJob(@RequestBody @Validated JobFormVO JobFormVO){
+    public ResponseBO addJob(@Validated JobFormVO JobFormVO){
+        if(!QuartzUtils.checkCron(JobFormVO.getCronExpression())){
+            return ResponseBO.failure("cron表达式输入有误,请仔细检查");
+        }
         try{
             return jobService.addJob(JobFormVO);
         }catch (Exception e){
@@ -44,7 +47,7 @@ public class JobController {
 
     @ApiOperation(value = "删除任务",httpMethod = "DELETE")
     @DeleteMapping
-    public ResponseBO deleteJob(@RequestBody @Validated JobKeyVO jobKeyVO){
+    public ResponseBO deleteJob(@Validated JobKeyVO jobKeyVO){
         try{
             return jobService.deleteJob(jobKeyVO);
         }catch (Exception e){
@@ -55,7 +58,7 @@ public class JobController {
 
     @ApiOperation(value = "暂停任务",httpMethod = "PUT")
     @PutMapping("/pause")
-    public ResponseBO pauseJob(@RequestBody @Validated JobKeyVO jobKeyVO){
+    public ResponseBO pauseJob(@Validated JobKeyVO jobKeyVO){
         try{
             return jobService.pauseJob(jobKeyVO);
         }catch (Exception e){
@@ -66,7 +69,7 @@ public class JobController {
 
     @ApiOperation(value = "重启任务",httpMethod = "PUT")
     @PutMapping("/resume")
-    public ResponseBO resumeJob(@RequestBody @Validated JobKeyVO jobKeyVO){
+    public ResponseBO resumeJob(@Validated JobKeyVO jobKeyVO){
         try{
             return jobService.resumeJob(jobKeyVO);
         }catch (Exception e){
@@ -77,7 +80,7 @@ public class JobController {
 
     @ApiOperation(value = "修改cron表达式",httpMethod = "PUT")
     @PutMapping("/cron")
-    public ResponseBO cronJob(@RequestBody @Validated JobCronVO jobCronVO){
+    public ResponseBO cronJob(@Validated JobCronVO jobCronVO){
         if(!QuartzUtils.checkCron(jobCronVO.getCronExpression())){
             return ResponseBO.failure("cron表达式输入有误,请仔细检查");
         }
