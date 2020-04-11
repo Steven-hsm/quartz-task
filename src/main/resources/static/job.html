@@ -36,6 +36,7 @@
             <el-table-column prop="jobClass" label="任务类名" align="center"></el-table-column>
             <el-table-column prop="triggerName" label="触发器名称" align="center"></el-table-column>
             <el-table-column prop="triggerGroup" label="触发器所在组" sortable align="center"></el-table-column>
+            <el-table-column prop="description" label="备注" align="center"></el-table-column>
             <el-table-column prop="cronExpression" label="cron表达式" align="center"></el-table-column>
             <el-table-column prop="previousFireTime" label="上次执行时间" align="center"></el-table-column>
             <el-table-column prop="nextFireTime" label="下次执行时间" align="center"></el-table-column>
@@ -240,6 +241,7 @@
                 }, {emulateJSON: true}).then(function (res) {
                     this.loadData(this.currentPage, this.pagesize);
                     this.dialogFormVisible = false;
+                    this.form = {};
                 }, function () {
                     console.log('failed');
                 });
@@ -250,6 +252,7 @@
                 this.updateFormVisible = true;
                 this.updateform.jobName = row.jobName;
                 this.updateform.jobGroup = row.jobGroup;
+                this.updateform.cronExpression = row.cronExpression;
             },
             // 更新任务
             update: function () {

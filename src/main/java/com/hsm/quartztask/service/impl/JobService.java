@@ -146,7 +146,7 @@ public class JobService implements IJobService {
                     info.setJobName(jobKey.getName());
                     info.setJobGroup(jobKey.getGroup());
                     info.setJobClass(jobDetail.getJobClass().getName());
-                    info.setJobDescription(jobDetail.getDescription());
+                    info.setDescription(jobDetail.getDescription());
                     info.setTriggerState(triggerState.name());
                     if (trigger instanceof CronTrigger) {
                         CronTrigger cronTrigger = (CronTrigger) trigger;

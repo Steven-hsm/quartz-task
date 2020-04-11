@@ -23,7 +23,7 @@ public class JobInfoBO {
     @ApiModelProperty("任务组")
     private String jobGroup;
     @ApiModelProperty("任务描述")
-    private String jobDescription;
+    private String description;
     @ApiModelProperty("任务描述")
     private String triggerState;
     @ApiModelProperty("cron表达式")
