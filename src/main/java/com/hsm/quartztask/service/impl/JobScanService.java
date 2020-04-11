@@ -42,7 +42,7 @@ public class JobScanService implements IJobScanService {
             log.error("没有配置spring.quartz.jobspring.package,你的任务可能无法启动");
         }
         //获取jar下所有的java文件
-        List<Class<?>> classes = ClassUtils.getClasses(scanPackage);
+        List<Class<?>> classes = ClassUtils.getClasses(scanPackage, ";");
         //剔除不是BaseJob的文件
         classes.removeIf(clazz -> !BaseJob.class.isAssignableFrom(clazz));
         //将所有扫描的类放入到set集合中
@@ -67,7 +67,7 @@ public class JobScanService implements IJobScanService {
                     CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobAndTrigger.getJobName(), jobAndTrigger.getJobGroup()).withSchedule(cron).build();
                     if (TriggerStateEnum.NORMAL.getState().equals(jobAndTrigger.getTriggerState())) {
                         scheduler.scheduleJob(jobDetail, trigger);
-                    }else if(TriggerStateEnum.PAUSED.getState().equals(jobAndTrigger.getTriggerState())){
+                    } else if (TriggerStateEnum.PAUSED.getState().equals(jobAndTrigger.getTriggerState())) {
                         scheduler.scheduleJob(jobDetail, trigger);
                         scheduler.pauseJob(JobKey.jobKey(jobAndTrigger.getJobName(), jobAndTrigger.getJobGroup()));
                     }

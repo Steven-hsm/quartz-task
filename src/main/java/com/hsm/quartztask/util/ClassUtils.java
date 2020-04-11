@@ -135,4 +135,14 @@ public class ClassUtils {
             }
         }
     }
+
+    public static List<Class<?>> getClasses(String scanPackage, String separator ) {
+        // 第一个class类的集合
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        String[] scanPackageArray = scanPackage.split(separator);
+        for (String packageName : scanPackageArray) {
+            classes.addAll(getClasses(packageName));
+        }
+        return  classes;
+    }
 }
