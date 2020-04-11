@@ -29,8 +29,8 @@ CREATE TABLE `job_trigger` (
 ```
 ## 3. 使用
 ### 3.1 quartz-task-1.0.0分支
-需要将表结构运行在数据库中,数据库的目的主要是为了让任务可以在项目重启时自动重启
-拉取quartz-task-1.0.0的代码直接运行即可
+1. 需要将表结构运行在数据库中,数据库的目的主要是为了让任务可以在项目重启时自动重启
+2. 拉取quartz-task-1.0.0的代码直接运行即可
 ### 3.2 master分支
 这里没有上传到公有仓库,你可以直接使用mvn install 安装到自己的本地仓库中
 详细demo:[github demo](https://github.com/Steven-hsm/learnexample/tree/master/quart-test)
