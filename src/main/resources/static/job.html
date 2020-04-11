@@ -15,6 +15,9 @@
             padding: 5px;
             /*overflow: hidden*/
         }
+        .full_select .el-select{
+            width: 100%;
+        }
     </style>
 
 </head>
@@ -79,8 +82,8 @@
             <!--<el-form-item label="任务bean" label-width="100px" style="width:90%">
                 <el-input v-model="form.jobClass" auto-complete="off"></el-input>
             </el-form-item>-->
-            <el-form-item label="任务bean" label-width="100px" style="width:90%">
-                <el-select v-model="form.jobClass" placeholder="请选择">
+            <el-form-item label="任务bean" label-width="100px" class="full_select" style="width:90%">
+                <el-select v-model="form.jobClass" placeholder="请选择" auto-complete="off">
                     <el-option
                             v-for="item in jobClass"
                             :key="item"
