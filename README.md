@@ -13,19 +13,19 @@
 ## 2.主要表结构
 ```sql
 CREATE TABLE `job_trigger` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `job_name` varchar(64) DEFAULT NULL,
-  `job_group` varchar(64) DEFAULT NULL,
-  `job_class` varchar(64) DEFAULT NULL,
-  `trigger_name` varchar(255) DEFAULT NULL,
-  `trigger_Group` varchar(255) DEFAULT NULL,
-  `cron_expression` varchar(255) DEFAULT NULL,
-  `trigger_state` varchar(10) DEFAULT NULL,
-  `ctime` bigint(13) DEFAULT NULL,
-  `description` varchar(128) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `job_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名',
+  `job_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务组',
+  `job_class` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务执行类',
+  `trigger_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '触发器名',
+  `trigger_state` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '触发器状态',
+  `trigger_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '触发器组',
+  `cron_expression` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'cron表达式',
+  `ctime` bigint(13) DEFAULT NULL COMMENT '添加时间',
+  `description` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务描述',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_uni` (`job_name`,`job_group`,`description`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+  UNIQUE KEY `uk_job` (`job_name`,`job_group`,`trigger_state`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '任务记录表';
 ```
 ## 3. 使用
 ### 3.1 quartz-task-1.0.0分支
