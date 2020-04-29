@@ -92,6 +92,16 @@ public class JobController {
         }
     }
 
+    @ApiOperation(value = "触发任务",httpMethod = "PUT")
+    @PutMapping("/execute")
+    public ResponseBO executeJob(@Validated JobKeyVO JobKeyVO){
+        try{
+            return jobService.executeJob(JobKeyVO);
+        }catch (Exception e){
+            log.error("服务处理异常,{}", e);
+            return ResponseBO.failure("触发失败");
+        }
+    }
     @ApiOperation(value = "获取任务列表",httpMethod = "GET")
     @GetMapping("/list")
     public ResponseBO<PageBO<JobInfoBO>> listJob(QueryVO queryVO){

@@ -65,4 +65,12 @@ public interface IJobService {
      * @return
      */
     ResponseBO<PageBO<JobAndTriggerPO>> listJob2(QueryVO queryVO);
+
+    /**
+     * 执行任务
+     * @param jobKeyVO
+     * @return
+     * @throws Exception
+     */
+    ResponseBO executeJob(JobKeyVO jobKeyVO) throws Exception;
 }
