@@ -57,7 +57,9 @@ public class Test05TriggerSchedule {
                 .usingJobData("data3", "第二种方式插入数据")
                 .withSchedule(
                         //设置调度的属性
-                        SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(3)
+                    SimpleScheduleBuilder.simpleSchedule()
+                            .withIntervalInSeconds(1)
+                            .withRepeatCount(3)
                 )
                 .startNow()
                 .build();
