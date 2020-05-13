@@ -84,7 +84,7 @@ public class JobController {
         if(!QuartzUtils.checkCron(jobCronVO.getCronExpression())){
             return ResponseBO.failure("cron表达式输入有误,请仔细检查");
         }
-        try{
+            try{
             return jobService.cronJob(jobCronVO);
         }catch (Exception e){
             log.error("服务处理异常,{}", e);
