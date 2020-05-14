@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>spring-boot-demo-task-quartz</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.9/theme-chalk/index.css" rel="stylesheet">
+    <title>潮生活定时任务</title>
+    <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.9/theme-chalk/index.css" rel="stylesheet">-->
+    <link href="./eleui2.4.9/css/index.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/vue/2.5.17/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.9/index.js"></script>
-    <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
-
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.9/index.js"></script>-->
+    <script src="./eleui2.4.9/js/index.js"></script>
     <style>
         #top {
             /*background: #20A0FF;*/
@@ -41,7 +41,7 @@
             <el-table-column prop="previousFireTime" label="上次执行时间" align="center"></el-table-column>
             <el-table-column prop="nextFireTime" label="下次执行时间" align="center"></el-table-column>
             <el-table-column prop="triggerState" label="状态" align="center" :formatter="formatState"></el-table-column>
-            <el-table-column label="操作" width="300" align="center">
+            <el-table-column label="操作" width="360" align="center">
                 <template scope="scope">
                     <el-button size="small" type="warning" @click="handlePause(scope.$index, scope.row)">
                         暂停
@@ -55,6 +55,9 @@
                     <el-button size="small" type="success" @click="handleUpdate(scope.$index, scope.row)">
                         修改
                     </el-button>
+                    <el-button size="small" type="success" @click="handleRun(scope.$index, scope.row)">
+                        运行
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -63,9 +66,9 @@
             <el-pagination
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page="currentPage"
+                    :current-page="page"
                     :page-sizes="[10, 20, 30, 40]"
-                    :page-size="pagesize"
+                    :page-size="perSize"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="totalCount">
             </el-pagination>
@@ -134,9 +137,9 @@
             //请求的URL
             url: 'job',
             //默认每页数据量
-            pagesize: 10,
+            perSize: 10,
             //当前页码
-            currentPage: 1,
+            page: 1,
             //查询的页码
             start: 1,
             //默认数据总数
@@ -170,14 +173,13 @@
                 }
             },
             // 从服务器读取数据
-            loadData: function (currentPage, pageSize) {
+            loadData: function (page, perSize) {
                 this.loading = true;
-                this.$http.get('job/list?' + 'currentPage=' + currentPage + '&pageSize=' + pageSize).then(function (res) {
-                    console.log(res);
-                    this.tableData = res.body.info.data;
-                    this.totalCount = res.body.info.totalCount;
+                this.$http.get('job/list?' + 'page=' + page + '&perSize=' + perSize).then(function (res) {
+                    this.tableData = res.body.info.result;
+                    this.totalCount = res.body.info.page.totalCount;
                     this.loading = false;
-                }, function () {
+                }, function (res) {
                     console.log('failed');
                 });
             },
@@ -189,7 +191,7 @@
                         "jobGroup": row.jobGroup
                     }
                 }, {emulateJSON: true}).then(function (res) {
-                    this.loadData(this.currentPage, this.pagesize);
+                    this.loadData(this.page, this.perSize);
                 }, function () {
                     console.log('failed');
                 });
@@ -200,7 +202,7 @@
                     "jobName": row.jobName,
                     "jobGroup": row.jobGroup
                 }, {emulateJSON: true}).then(function (res) {
-                    this.loadData(this.currentPage, this.pagesize);
+                    this.loadData(this.page, this.perSize);
                 }, function () {
                     console.log('failed');
                 });
@@ -211,21 +213,37 @@
                     "jobName": row.jobName,
                     "jobGroup": row.jobGroup
                 }, {emulateJSON: true}).then(function (res) {
-                    this.loadData(this.currentPage, this.pagesize);
+                    this.loadData(this.page, this.perSize);
+                }, function () {
+                    console.log('failed');
+                });
+            },
+            // 删除任务
+            handleRun: function (index, row) {
+                this.$http.put('job/execute', {
+                    "jobName": row.jobName,
+                    "jobGroup": row.jobGroup
+                }, {emulateJSON: true}).then(function (res) {
+                    this.loadData(this.page, this.perSize);
                 }, function () {
                     console.log('failed');
                 });
             },
             // 搜索
             search: function () {
-                this.loadData(this.currentPage, this.pagesize);
+                this.loadData(this.page, this.perSize);
             },
             // 弹出对话框
             handleadd: function () {
                 this.dialogFormVisible = true;
+                this.form.cronExpression = "0 */1 * * * ?"
                 this.$http.get('job/scan/list',{}, {emulateJSON: true}
                 ).then(function (res) {
-                    this.jobClass= res.body.info.toAddClass
+                    if(res.body.state){
+                        this.jobClass= res.body.info.toAddClass
+                    }else{
+                        alert(res.body.message);
+                    }
                 }, function () {
                     console.log('failed');
                 });
@@ -239,9 +257,13 @@
                     "cronExpression": this.form.cronExpression,
                     "description": this.form.description
                 }, {emulateJSON: true}).then(function (res) {
-                    this.loadData(this.currentPage, this.pagesize);
-                    this.dialogFormVisible = false;
-                    this.form = {};
+                    if(res.body.state){
+                        this.loadData(this.page, this.perSize);
+                        this.dialogFormVisible = false;
+                        this.form = {};
+                    }else{
+                        alert(res.body.message);
+                    }
                 }, function () {
                     console.log('failed');
                 });
@@ -263,8 +285,12 @@
                         "cronExpression": this.updateform.cronExpression
                     }, {emulateJSON: true}
                 ).then(function (res) {
-                    this.loadData(this.currentPage, this.pagesize);
-                    this.updateFormVisible = false;
+                    if(res.body.state){
+                        this.loadData(this.page, this.perSize);
+                        this.updateFormVisible = false;
+                    }else{
+                        alert(res.body.message);
+                    }
                 }, function () {
                     console.log('failed');
                 });
@@ -273,25 +299,29 @@
             scanJobList:function(){
                 this.$http.put('job/scan/list',{}, {emulateJSON: true}
                 ).then(function (res) {
-                    this.jobClass= res.body.info.toAddClass
+                    if(res.body.state){
+                        this.jobClass= res.body.info.toAddClass
+                    }else{
+                        alert(res.body.message);
+                    }
                 }, function () {
                     console.log('failed');
                 });
             },
             // 每页显示数据量变更
             handleSizeChange: function (val) {
-                this.pagesize = val;
-                this.loadData(this.currentPage, this.pagesize);
+                this.perSize = val;
+                this.loadData(this.page, this.perSize);
             },
             // 页码变更
             handleCurrentChange: function (val) {
-                this.currentPage = val;
-                this.loadData(this.currentPage, this.pagesize);
+                this.page = val;
+                this.loadData(this.page, this.perSize);
             }
         }
     });
     //载入数据
-    vue.loadData(vue.currentPage, vue.pagesize);
+    vue.loadData(vue.page, vue.perSize);
 </script>
 
 </body>

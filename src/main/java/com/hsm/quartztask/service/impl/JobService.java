@@ -168,6 +168,19 @@ public class JobService implements IJobService {
     }
 
     @Override
+    public ResponseBO executeJob(JobKeyVO jobKeyVO) throws Exception{
+        try {
+            log.info("触发jobName={},jobGroup={}", jobKeyVO.getJobName(), jobKeyVO.getJobGroup());
+            JobKey jobKey = new JobKey(jobKeyVO.getJobName(), jobKeyVO.getJobGroup());
+            scheduler.triggerJob(jobKey);
+        } catch (SchedulerException e) {
+            log.error("触发job失败, jobName={},jobGroup={},e={}", jobKeyVO.getJobName(), jobKeyVO.getJobGroup(), e);
+            throw new Exception("任务执行失败");
+        }
+        return ResponseBO.success("任务执行成功");
+    }
+
+    @Override
     public ResponseBO<PageBO<JobAndTriggerPO>> listJob2(QueryVO queryVO) {
         IPage<JobAndTriggerPO> page = jobAndTriggerMapper.list(new Page(queryVO.getCurrentPage(),queryVO.getPageSize()));
         return ResponseBO.success(PageUtils.transferToPage(page.getRecords(), queryVO));
