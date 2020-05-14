@@ -18,3 +18,65 @@ mybatis-plus:
 logging:
   level:
     com.baomidou.mybatisplus.samples.quickstart: debug
+org:
+  quartz:
+    scheduler:
+      # 实例名称 string 默认QuartzScheduler 如果使用集群,相同的调度程序需要使用相同的实例名称
+      instanceName: quartz-task
+      # 实例id String 默认NON_CLUSTERED
+      instanceId: AUTO
+      #实例id生成器 String 默认 org.quartz.simpl.SimpleInstanceIdGenerator
+      instanceIdGenerator:
+        class: org.quartz.simpl.SimpleInstanceIdGenerator
+      # 线程名称 String 默认 instanceName + '_QuartzSchedulerThread'
+      threadName: task-thread
+      # 是否标记为守护进程 默认false 调度程序的主线程是否应该是守护线程
+      makeSchedulerThreadDaemon: false
+      #用于指定Quartz产生的线程是否会继承初始化线程（初始化Quartz实例的线程）的上下文ClassLoader 默认false
+      threadsInheritContextClassLoaderOfInitializer: false
+      # 默认30000 新查询可用触发器之前等待的时间量
+      idleWaitTime: 30000
+      # 默认15000 数据库连接失败等待的时间量
+      dbFailureRetryInterval: 15000
+      # 默认org.quartz.simpl.CascadingClassLoadHelper
+      classLoadHelper:
+        class: org.quartz.simpl.CascadingClassLoadHelper
+      # 默认 org.quartz.simpl.PropertySettingJobFactory
+      jobFactory:
+        class: org.quartz.simpl.PropertySettingJobFactory
+      #默认java:comp/UserTransaction
+      userTransactionURL: java:comp/UserTransaction
+      #默认false
+      wrapJobExecutionInUserTransaction: false
+       #默认false 是否跳过运行快速Web请求以确定是否有可更新的Quartz版本可供下载
+      skipUpdateCheck: false
+      # 默认1 允许调度程序节点一次获取（用于触发）的触发器的最大数量
+      batchTriggerAcquisitionMaxCount: 1
+      # 默认0 允许触发器在其预定的火灾时间之前被获取和触发的时间（毫秒）的时间量
+      batchTriggerAcquisitionFireAheadTimeWindow: 0
+    #等效的put（“MyKey”，“MyValue”）
+    context:
+      key:
+        MyKey: MyValue
+    jobStore:
+      class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      #JDBC委托代理
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      #表前缀
+      tablePrefix: QRTZ_
+      isClustered: false
+    threadPool:
+      # 指定线程池使用类
+      class: org.quartz.simpl.SimpleThreadPool
+      # 线程数 默认-1
+      threadCount: 2
+      # 线程优先级 默认5
+      threadPriority: 5
+      # 线程池是否为守护进程 默认false
+      makeThreadsDaemons: false
+      #线程是否继承初始化线程组 默认true
+      threadsInheritGroupOfInitializingThread: true
+      # 默认false
+      threadsInheritContextClassLoaderOfInitializingThread: false
+      # 线程名前缀
+      threadNamePrefix: task
