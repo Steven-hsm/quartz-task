@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @MapperScan("com.hsm.quartztask.mapper")
-@EnableScheduling
 public class QuartzTaskApplication {
 
     public static void main(String[] args) {
