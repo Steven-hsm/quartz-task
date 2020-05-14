@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/5/14 11:56
  */
 @Component
-public class InvoiceTrigger {
+public class TriggerBeanInitConfig {
 
     @Autowired
     private JobDetailFactoryBean invoiceQueryJobDetail;

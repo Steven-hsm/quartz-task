@@ -17,12 +17,11 @@ public class InvoiceQueryJobBean extends QuartzJobBean {
     /**
      * QuartzJobBean 和Job的区别就是QuartzJobBean将job的datamap数据直接放到实例对象的属性中
      */
-    private int name;
-
+    private String name;
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         //TODO 发票查询
-        log.info("从dataMap中获取的数据", this.name);
+        log.info("从dataMap中获取的数据:{}", this.getName());
     }
 }
