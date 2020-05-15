@@ -38,7 +38,7 @@ CREATE TABLE `job_trigger` (
 ```xml
     <dependency>
         <groupId>com.hsm</groupId>
-        <artifactId>quartz-task</artifactId>
+        <artifactId>spring-boot-quartz</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </dependency>
 ```
