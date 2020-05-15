@@ -13,15 +13,15 @@ import lombok.Data;
 @ApiModel("分页入参")
 public class QueryVO {
     @ApiModelProperty("分页入参")
-    private int currentPage;
+    private int page;
     @ApiModelProperty("分页大小")
-    private int pageSize;
+    private int perSize;
 
     public QueryVO() {
     }
 
     public QueryVO(int currentPage, int pageSize) {
-        this.currentPage = currentPage;
-        this.pageSize = pageSize;
+        this.page = page;
+        this.perSize = perSize;
     }
 }

@@ -182,7 +182,7 @@ public class JobService implements IJobService {
 
     @Override
     public ResponseBO<PageBO<JobAndTriggerPO>> listJob2(QueryVO queryVO) {
-        IPage<JobAndTriggerPO> page = jobAndTriggerMapper.list(new Page(queryVO.getCurrentPage(),queryVO.getPageSize()));
+        IPage<JobAndTriggerPO> page = jobAndTriggerMapper.list(new Page(queryVO.getPage(),queryVO.getPerSize()));
         return ResponseBO.success(PageUtils.transferToPage(page.getRecords(), queryVO));
     }
 }
