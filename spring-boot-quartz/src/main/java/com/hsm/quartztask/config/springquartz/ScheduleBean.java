@@ -32,7 +32,7 @@ public class ScheduleBean {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         schedulerFactoryBean.setJobFactory(quartzJobFactory);
         schedulerFactoryBean.setDataSource(dataSource);
-        schedulerFactoryBean.setTriggers(invoiceQueryTrigger.getObject());
+        //schedulerFactoryBean.setTriggers(invoiceQueryTrigger.getObject());
         return schedulerFactoryBean;
     }
 }
